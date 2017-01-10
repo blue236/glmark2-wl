@@ -34,7 +34,8 @@ const struct wl_registry_listener NativeStateWayland::registry_listener_ = {
 };
 
 const struct wl_seat_listener NativeStateWayland::seat_listener_ = {
-    NativeStateWayland::seat_handle_capabilities
+    NativeStateWayland::seat_handle_capabilities,
+    NULL
 };
 
 const struct wl_shell_surface_listener NativeStateWayland::shell_surface_listener_ = {
@@ -48,12 +49,15 @@ const struct wl_keyboard_listener NativeStateWayland::keyboard_listener_ = {
     NativeStateWayland::keyboard_handle_enter,
     NativeStateWayland::keyboard_handle_leave,
     NativeStateWayland::keyboard_handle_key,
-    NativeStateWayland::keyboard_handle_modifiers
+    NativeStateWayland::keyboard_handle_modifiers,
+    NULL
 };
 
 const struct wl_output_listener NativeStateWayland::output_listener_ = {
     NativeStateWayland::output_handle_geometry,
-    NativeStateWayland::output_handle_mode
+    NativeStateWayland::output_handle_mode,
+    NULL,
+    NULL
 };
 
 volatile bool NativeStateWayland::should_quit_ = false;
@@ -90,8 +94,9 @@ NativeStateWayland::~NativeStateWayland()
 
 void
 NativeStateWayland::registry_handle_global(void *data, struct wl_registry *registry,
-                                           uint32_t id, const char *interface, uint32_t version)
+                                           uint32_t name, const char *interface, uint32_t version)
 {
+    uint32_t id = name;
     (void) version;
     NativeStateWayland *that = static_cast<NativeStateWayland *>(data);
     if (strcmp(interface, "wl_compositor") == 0) {
